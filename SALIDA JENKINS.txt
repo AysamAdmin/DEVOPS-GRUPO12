@@ -1,0 +1,102 @@
+Started by user jenkinsadmin
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/PipeLineTelemetria
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Clonar Repositorio)
+[Pipeline] git
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/PipeLineTelemetria/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/AysamAdmin/cursoDevops # timeout=10
+Fetching upstream changes from https://github.com/AysamAdmin/cursoDevops
+ > git --version # timeout=10
+ > git --version # 'git version 2.30.2'
+ > git fetch --tags --force --progress -- https://github.com/AysamAdmin/cursoDevops +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision 98a1949a983c1e8b76f47874550f33f0869632bd (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 98a1949a983c1e8b76f47874550f33f0869632bd # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D main # timeout=10
+ > git checkout -b main 98a1949a983c1e8b76f47874550f33f0869632bd # timeout=10
+Commit message: "Add files via upload"
+ > git rev-list --no-walk 98a1949a983c1e8b76f47874550f33f0869632bd # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Preparar Entorno)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ command -v docker
+/usr/bin/docker
+[Pipeline] sh
++ echo var = 2.20.0
+var = 2.20.0
+[Pipeline] sh
++ command -v docker-compose
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Bajar HTTPD)
+[Pipeline] sh
++ docker images
+REPOSITORY               TAG       IMAGE ID       CREATED         SIZE
+grafana/grafana          latest    147620479985   5 days ago      646MB
+prom/prometheus          latest    3b9b2a15d376   6 days ago      410MB
+mysql                    latest    dd104bb6b1bb   5 weeks ago     825MB
+nginx                    latest    bc5eac5eafc5   7 weeks ago     279MB
+httpd                    latest    6bdbdf5ac16a   4 months ago    221MB
+prom/blackbox-exporter   latest    b04a9fef4fa0   7 months ago    39.9MB
+mguazzardo/pipe-seg      latest    cc37a6f10ee6   17 months ago   3.89GB
+[Pipeline] sh
++ docker exec httpd apachectl stop
+AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.28.0.5. Set the 'ServerName' directive globally to suppress this message
+[Pipeline] sh
++ sleep 30
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Levantar HTTPD)
+[Pipeline] sh
++ docker images
+REPOSITORY               TAG       IMAGE ID       CREATED         SIZE
+grafana/grafana          latest    147620479985   5 days ago      646MB
+prom/prometheus          latest    3b9b2a15d376   6 days ago      410MB
+mysql                    latest    dd104bb6b1bb   5 weeks ago     825MB
+nginx                    latest    bc5eac5eafc5   7 weeks ago     279MB
+httpd                    latest    6bdbdf5ac16a   4 months ago    221MB
+prom/blackbox-exporter   latest    b04a9fef4fa0   7 months ago    39.9MB
+mguazzardo/pipe-seg      latest    cc37a6f10ee6   17 months ago   3.89GB
+[Pipeline] sh
++ docker start httpd
+httpd
+[Pipeline] sh
++ sleep 30
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+Pipeline Finalizada
+[Pipeline] echo
+Servicios levantados con éxito.
+[Pipeline] sh
++ docker-compose down
+/var/jenkins_home/workspace/PipeLineTelemetria@tmp/durable-cffe134b/script.sh: 1: docker-compose: not found
++ true
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
