@@ -1,0 +1,69 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_COMPOSE_VERSION = '2.20.0' // Cambia a la versión que necesites
+    }
+
+    stages {
+        stage('Clonar Repositorio') {
+            steps {
+                git url: 'https://github.com/AysamAdmin/cursoDevops', branch: 'main'
+            }
+        }
+
+        stage('Preparar Entorno') {
+            steps {
+                script {
+                    // Verificar si Docker está instalado
+                    if (!sh(script: 'command -v docker', returnStatus: true) == 0) {
+                        sh 'curl -fsSL https://get.docker.com | bash'
+                        echo 'lo instalo'
+                    }
+                    
+                    // Verificar si Docker Compose está instalado
+                    sh "echo 'var = '${DOCKER_COMPOSE_VERSION}"
+                    if (!sh(script: 'command -v docker-compose', returnStatus: true) == 0) {
+                        echo 'instala docker-compose'
+                        echo '${DOCKER_COMPOSE_VERSION}'
+                        sh """
+                        curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-\$(uname -s)-\$(uname -m)" -o /usr/local/bin/docker-compose
+                        chmod +x /usr/local/bin/docker-compose
+                        """
+                        echo 'fin instala docker-compose'
+                    }
+                }
+            }
+        }
+
+        stage('Bajar HTTPD') {
+            steps {
+                sh 'docker images'
+                sh 'docker exec httpd apachectl stop'
+                sh 'sleep 30'}
+            }
+        stage('Levantar HTTPD') {
+            steps {
+                sh 'docker images'
+                //sh 'docker exec httpd apachectl start'
+                sh 'docker start httpd'
+                sh 'sleep 30'}
+            }
+    }
+
+    post {
+        always {
+            echo 'Pipeline Finalizada'
+        }
+        success {
+            echo 'Servicios levantados con éxito.'
+        }
+        failure {
+            echo 'Hubo un error en la pipeline.'
+        }
+        cleanup {
+            // Para detener y eliminar contenedores si es necesario
+            sh 'docker-compose down || true'
+        }
+    }
+}
